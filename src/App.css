@@ -5,7 +5,11 @@ body {
     line-height: 22px;
   
   }
-  
+
+.d-none {
+    display: none;
+}
+
   form {
     margin-bottom: 10px;
   }
