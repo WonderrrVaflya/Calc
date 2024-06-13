@@ -1,0 +1,25 @@
+{
+  "entries": [
+    {
+      "id": "fcaa",
+      "name": "bhd",
+      "exchange": "8)))",
+      "date": "13.06.2024",
+      "totalFurnitureCost": 100,
+      "designerBonus": "2",
+      "designerBonusSum": 2,
+      "userBonus": "10",
+      "userBonusSum": 10,
+      "finalTotalCost": 112,
+      "calculatorCosts": {
+        "kitchen": 100,
+        "bathroom": 0,
+        "wallPanels": 0,
+        "windowSills": 0,
+        "shelves": 0,
+        "other": 0,
+        "comments": 0
+      }
+    }
+  ]
+}

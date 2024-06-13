@@ -6,6 +6,11 @@ body {
   
   }
 
+.button-container {
+  display: flex;
+  gap: 5px;
+}
+
 .d-none {
     display: none;
 }
@@ -16,6 +21,12 @@ body {
   
   .form-group {
     margin-bottom: 10px;
+    gap: 20px;
+  }
+
+  .form-row {
+    display: flex;
+    gap: 10px;
   }
   
   .form-table {

@@ -1,9 +1,13 @@
-import React, { useState } from 'react'; 
+import React, { useState, useEffect } from 'react'; 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 import KitchenCalculator from './Components/KitchenCalculator';
 import BathroomCalculator from './Components/BathroomCalculator';
-// Импортируйте другие калькуляторы аналогичным образом
+import WallPanelsCalculator from './Components/WallPanelsCalculator';
+import ShelvesCalculator from './Components/ShelvesCalculator';
+import WindowSillsCalculator from './Components/WindowSillsCalculator';
+import Other from './Components/Other';
+import Comments from './Components/Comments';
 
 const App = () => {
     const [visibleCalculators, setVisibleCalculators] = useState({
@@ -26,7 +30,38 @@ const App = () => {
         comments: 0,
     });
 
-    const [designerBonus, setDesignerBonus] = useState(0);
+    const toggleCalculatorVisibility = (calculator) => {
+        setVisibleCalculators((prevState) => ({
+            ...prevState,
+            [calculator]: !prevState[calculator],
+        }));
+    };
+
+    const [name, setName] = useState('');
+    const [exchange, setExchange] = useState('');
+    const [designerBonus, setDesignerBonus] = useState('');
+    const [designerBonusSum, setDesignerBonusSum] = useState('');
+    const [userBonus, setUserBonus] = useState('');
+    const [userBonusSum, setUserBonusSum] = useState('');
+
+    const [currentDate, setCurrentDate] = useState('');
+
+  useEffect(() => {
+    const updateDate = () => {
+      const now = new Date();
+      const day = String(now.getDate()).padStart(2, '0');
+      const month = String(now.getMonth() + 1).padStart(2, '0');
+      const year = now.getFullYear();
+      const formattedDate = `${day}.${month}.${year}`;
+      setCurrentDate(formattedDate);
+    };
+
+    updateDate();
+    const interval = setInterval(updateDate, 1000 * 60 * 10); 
+
+    return () => clearInterval(interval); 
+  }, []);
+
 
     const updateTotalCost = (cost, calculator) => {
         setCalculatorCosts((prevCosts) => ({
@@ -35,18 +70,64 @@ const App = () => {
         }));
     };
 
+    const totalFurnitureCost = Object.values(calculatorCosts).reduce((sum, cost) => sum + cost, 0);
+
     const handleDesignerBonusChange = (e) => {
-        setDesignerBonus(parseFloat(e.target.value) || 0);
+        const value = e.target.value;
+        const summ = parseFloat(value) / 100 * totalFurnitureCost;
+        setDesignerBonus(value);
+        if (!isNaN(summ)) {
+            setDesignerBonusSum(summ);
+        } else {
+            setDesignerBonusSum(0);
+        }
     };
 
-    const totalFurnitureCost = Object.values(calculatorCosts).reduce((sum, cost) => sum + cost, 0);
-    const finalTotalCost = totalFurnitureCost + designerBonus;
+    const handleUserBonusChange = (e) => {
+        const value = e.target.value;
+        const summ = parseFloat(value) / 100 * totalFurnitureCost;
+        setUserBonus(value);
+        if (!isNaN(summ)) {
+            setUserBonusSum(summ);
+        } else {
+            setUserBonusSum(0);
+        }
+    };
 
-    const toggleCalculatorVisibility = (calculator) => {
-        setVisibleCalculators((prevState) => ({
-            ...prevState,
-            [calculator]: !prevState[calculator],
-        }));
+    const finalTotalCost = totalFurnitureCost + designerBonusSum + userBonusSum;
+
+    const handleSave = async () => {
+        const data = {
+            name,
+            exchange,
+            date: currentDate,
+            totalFurnitureCost,
+            designerBonus,
+            designerBonusSum,
+            userBonus,
+            userBonusSum,
+            finalTotalCost,
+            calculatorCosts
+        };
+
+        try {
+            const response = await fetch('http://localhost:5000/entries', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
+            });
+
+            if (response.ok) {
+                alert('Данные успешно сохранены!');
+            } else {
+                alert('Ошибка при сохранении данных');
+            }
+        } catch (error) {
+            console.error('Ошибка при сохранении данных:', error);
+            alert('Ошибка при сохранении данных');
+        }
     };
 
     return (
@@ -54,27 +135,35 @@ const App = () => {
             <div className="form-row header">
                 <div className="form-group col-md-4">
                     <label htmlFor="inputName">Имя</label>
-                    <input className="form-control inputName" type="text"/>
+                    <input 
+                    className="form-control inputName" 
+                    type="text"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    />
                 </div>
                 <div className="form-group col-md-4">
                     <label htmlFor="inputCurs">Курс</label>
-                    <input type="number" className="form-control" id="inputCurs"/>
+                    <input 
+                    className="form-control inputName" 
+                    type="text"
+                    value={exchange}
+                    onChange={(e) => setExchange(e.target.value)}
+                    />
                 </div>
                 <div className="form-group col-md-4 header-date">
-                    <p id="inputData"></p>
+                    <p>Дата: {currentDate}</p>
                 </div>
             </div>
-
-            <div>
-                <button className="btn btn-primary" onClick={() => toggleCalculatorVisibility('kitchen')}>Столешница Кух</button>
-                <button className="btn btn-primary" onClick={() => toggleCalculatorVisibility('bathroom')}>Столешница С/У</button>
-                <button className="btn btn-primary" onClick={() => toggleCalculatorVisibility('wallPanels')}>Стен панели</button>
-                <button className="btn btn-primary" onClick={() => toggleCalculatorVisibility('windowSills')}>Подоконники</button>
-                <button className="btn btn-primary" onClick={() => toggleCalculatorVisibility('shelves')}>Полки</button>
-                <button className="btn btn-primary" onClick={() => toggleCalculatorVisibility('other')}>Иное</button>
-                <button className="btn btn-primary" onClick={() => toggleCalculatorVisibility('comments')}>Комментарий</button>
+            <div className='button-container'>
+                <button className="btn btn-success btns-finish" onClick={() => toggleCalculatorVisibility('kitchen')}>Столешница Кух</button>
+                <button className="btn btn-success btns-finish" onClick={() => toggleCalculatorVisibility('bathroom')}>Столешница С/У</button>
+                <button className="btn btn-success btns-finish" onClick={() => toggleCalculatorVisibility('wallPanels')}>Стен панели</button>
+                <button className="btn btn-success btns-finish" onClick={() => toggleCalculatorVisibility('windowSills')}>Подоконники</button>
+                <button className="btn btn-success btns-finish" onClick={() => toggleCalculatorVisibility('shelves')}>Полки</button>
+                <button className="btn btn-success btns-finish" onClick={() => toggleCalculatorVisibility('other')}>Иное</button>
+                <button className="btn btn-success btns-finish" onClick={() => toggleCalculatorVisibility('comments')}>Комментарий</button>
             </div>
-
             <div className={visibleCalculators.kitchen ? '' : 'd-none'}>
                 <KitchenCalculator updateTotalCost={(cost) => updateTotalCost(cost, 'kitchen')} />
             </div>
@@ -82,30 +171,25 @@ const App = () => {
                 <BathroomCalculator updateTotalCost={(cost) => updateTotalCost(cost, 'bathroom')} />
             </div>
             <div className={visibleCalculators.wallPanels ? '' : 'd-none'}>
-                стен панели
-                {/* <BathroomCalculator updateTotalCost={(cost) => updateTotalCost(cost, 'bathroom')} /> */}
+                <WallPanelsCalculator updateTotalCost={(cost) => updateTotalCost(cost, 'wallPanels')} />
             </div>
             <div className={visibleCalculators.windowSills ? '' : 'd-none'}>
-                Подоконники
-                {/* <BathroomCalculator updateTotalCost={(cost) => updateTotalCost(cost, 'bathroom')} /> */}
+                <WindowSillsCalculator updateTotalCost={(cost) => updateTotalCost(cost, 'windowSills')} />
             </div>
             <div className={visibleCalculators.shelves ? '' : 'd-none'}>
-                Полки
-                {/* <BathroomCalculator updateTotalCost={(cost) => updateTotalCost(cost, 'bathroom')} /> */}
+                <ShelvesCalculator updateTotalCost={(cost) => updateTotalCost(cost, 'shelves')} />
             </div>
             <div className={visibleCalculators.other ? '' : 'd-none'}>
-                Иное
-                {/* <BathroomCalculator updateTotalCost={(cost) => updateTotalCost(cost, 'bathroom')} /> */}
+                <Other updateTotalCost={(cost) => updateTotalCost(cost, 'other')} />
             </div>
             <div className={visibleCalculators.comments ? '' : 'd-none'}>
-                Комментарий
-                {/* <BathroomCalculator updateTotalCost={(cost) => updateTotalCost(cost, 'bathroom')} /> */}
+                <Comments updateTotalCost={(cost) => updateTotalCost(cost, 'comments')} />
             </div>
 
             <div className="finish">   
                 <p className="summ">Общая стоимость: {totalFurnitureCost}</p>
                 <div className="form-group">
-                    <label>Бонус Дизайнера</label>
+                    <label>Бонус Дизайнера: {designerBonusSum}</label>
                     <input 
                     type="number" 
                     className="form-control" 
@@ -113,10 +197,21 @@ const App = () => {
                     onChange={handleDesignerBonusChange} 
                     />
                 </div>
-                <p className="summ">Процент:</p>
+                <p className="summ">Процент: {userBonusSum}</p>
+                    <input 
+                    type="number" 
+                    className="form-control" 
+                    value={userBonus} 
+                    onChange={handleUserBonusChange} 
+                    />
                 <p className="summ">Итого: {finalTotalCost}</p>
             </div>
-            <button type="button" className="btn btn-primary btn-lg btn-block">Сохранить</button>
+            <button 
+                type="button" 
+                className="btn btn-primary btn-lg btn-block" 
+                onClick={handleSave}>
+                Сохранить
+            </button>
         </div>
     );
 };

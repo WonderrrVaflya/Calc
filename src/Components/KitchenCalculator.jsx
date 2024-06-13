@@ -3,6 +3,8 @@ import React, { useState, useEffect } from 'react';
 const KitchenCalculator = ({ updateTotalCost }) => {
   const [items, setItems] = useState([]);
   const [sinks, setSinks] = useState([]);
+  const [hobs, setHobs] = useState([]);
+  const [cutouts, setCutouts] = useState([]);
   const [additionalServices, setAdditionalServices] = useState([]);
 
   const [product, setProduct] = useState('');
@@ -19,6 +21,14 @@ const KitchenCalculator = ({ updateTotalCost }) => {
   const [sinkQuantity, setSinkQuantity] = useState('');
   const [sinkPrice, setSinkPrice] = useState('');
 
+  const [hobModel, setHobModel] = useState('');
+  const [hobQuantity, setHobQuantity] = useState('');
+  const [hobPrice, setHobPrice] = useState('');
+
+  const [cutoutModel, setCutoutModel] = useState('');
+  const [cutoutQuantity, setCutoutQuantity] = useState('');
+  const [cutoutPrice, setCutoutPrice] = useState('');
+
   const [serviceName, setServiceName] = useState('');
   const [serviceQuantity, setServiceQuantity] = useState('');
   const [servicePrice, setServicePrice] = useState('');
@@ -28,45 +38,75 @@ const KitchenCalculator = ({ updateTotalCost }) => {
 
   useEffect(() => {
     updateTotalCost(totalCost);
-  }, [totalCost, updateTotalCost]);
+  }, [totalCost]);
 
   const addDimension = () => {
-    const area = parseFloat(length) * parseFloat(width);
-    const cost = parseFloat(materialQuantity) * parseFloat(unitPrice);
-    const newItem = { length, width, area, materialQuantity, unitPrice, cost };
-    setItems([...items, newItem]);
-    setTotalArea(totalArea + area);
-    setTotalCost(totalCost + cost);
-    setLength('');
-    setWidth('');
-    setMaterialQuantity('');
-    setUnitPrice('');
+    if (length && width && materialQuantity && unitPrice) {
+      const area = totalArea;
+      const cost = parseFloat(materialQuantity) * parseFloat(unitPrice);
+      const newItem = { length, width, area, materialQuantity, unitPrice, cost };
+      setItems([...items, newItem]);
+      setTotalCost(totalCost + cost);
+      setLength('');
+      setWidth('');
+      setMaterialQuantity('');
+      setUnitPrice('');
+    }
   };
-
+  
   const addSink = () => {
-    const cost = parseFloat(sinkQuantity) * parseFloat(sinkPrice);
-    const newSink = { sinkModel, sinkQuantity, sinkPrice, cost };
-    setSinks([...sinks, newSink]);
-    setTotalCost(totalCost + cost);
-    setSinkModel('');
-    setSinkQuantity('');
-    setSinkPrice('');
+    if (sinkModel && sinkQuantity && sinkPrice) {
+      const cost = parseFloat(sinkQuantity) * parseFloat(sinkPrice);
+      const newSink = { sinkModel, sinkQuantity, sinkPrice, cost };
+      setSinks([...sinks, newSink]);
+      setTotalCost(totalCost + cost);
+      setSinkModel('');
+      setSinkQuantity('');
+      setSinkPrice('');
+    }
   };
-
+  
+  const addHob = () => {
+    if (hobModel && hobQuantity && hobPrice) {
+      const cost = parseFloat(hobQuantity) * parseFloat(hobPrice);
+      const newHob = { hobModel, hobQuantity, hobPrice, cost };
+      setHobs([...hobs, newHob]);
+      setTotalCost(totalCost + cost);
+      setHobModel('');
+      setHobQuantity('');
+      setHobPrice('');
+    }
+  };
+  
+  const addCutout = () => {
+    if (cutoutModel && cutoutQuantity && cutoutPrice) {
+      const cost = parseFloat(cutoutQuantity) * parseFloat(cutoutPrice);
+      const newCutout = { cutoutModel, cutoutQuantity, cutoutPrice, cost };
+      setCutouts([...cutouts, newCutout]);
+      setTotalCost(totalCost + cost);
+      setCutoutModel('');
+      setCutoutQuantity('');
+      setCutoutPrice('');
+    }
+  };
+  
   const addService = () => {
-    const cost = parseFloat(serviceQuantity) * parseFloat(servicePrice);
-    const newService = { serviceName, serviceQuantity, servicePrice, cost };
-    setAdditionalServices([...additionalServices, newService]);
-    setTotalCost(totalCost + cost);
-    setServiceName('');
-    setServiceQuantity('');
-    setServicePrice('');
+    if (serviceName && serviceQuantity && servicePrice) {
+      const cost = parseFloat(serviceQuantity) * parseFloat(servicePrice);
+      const newService = { serviceName, serviceQuantity, servicePrice, cost };
+      setAdditionalServices([...additionalServices, newService]);
+      setTotalCost(totalCost + cost);
+      setServiceName('');
+      setServiceQuantity('');
+      setServicePrice('');
+    }
   };
+  
 
   return (
     <div>
       <form className="form-table">
-        {/* ... rest of the form ... */}
+        <h2>Столешница кух</h2>
         <div className="form-row about">
           <div className="form-group col-md-3">
             <label>Изделие</label>
@@ -125,7 +165,6 @@ const KitchenCalculator = ({ updateTotalCost }) => {
           </div>
         </div>
 
-        {/* Form for adding dimensions, sinks, and services */}
         <div className="size">
           <div className="form-row form-size">
             <div className="form-block">
@@ -150,9 +189,16 @@ const KitchenCalculator = ({ updateTotalCost }) => {
                 </div>
               </div>
             </div>
-            <div className="form-group col-md-2">
-              <label>Общая площадь</label>
-              <input type="number" className="form-control size__sum" value={totalArea} readOnly />
+            <label>Общая площадь: {totalArea}</label>
+            <div className="button-container">
+              <button 
+              type='button' 
+              className="btn btn-danger size-btn" 
+              onClick={() => (length && width) ? setTotalArea(totalArea + parseFloat(length) * parseFloat(width)): setTotalArea(totalArea)}
+              >
+                Подсчитать
+              </button>
+              <button type='button' className="btn btn-danger size-btn" onClick={() => setTotalArea(0)}>Обнулить</button>
             </div>
             <div className="form-group col-md-2">
               <label>Кол-во Материала</label>
@@ -183,7 +229,88 @@ const KitchenCalculator = ({ updateTotalCost }) => {
         </div>
         <button type="button" className="btn btn-danger size-btn" onClick={addDimension}>Добавить размеры</button>
 
-        {/* Sinks form */}
+        <div className="form-row washing">
+          <div className="form-group col-md-4">
+            <label>Варочная панель</label>
+            <select 
+            className="form-control"
+            value={hobModel}
+            onChange={(e) => setHobModel(e.target.value)}
+            >
+            <option value="">Выберите</option>
+            <option>Накладная</option>
+            <option>В уровень</option>
+          </select>
+          </div>
+          <div className="form-group col-md-2">
+            <label>Кол-во</label>
+            <input 
+              type="number" 
+              className="form-control"
+              value={hobQuantity}
+              onChange={(e) => setHobQuantity(e.target.value)}
+            />
+          </div>
+          <div className="form-group col-md-2">
+            <label>Цена</label>
+            <input 
+              type="number" 
+              className="form-control result"
+              value={hobPrice}
+              onChange={(e) => setHobPrice(e.target.value)}
+            />
+          </div>
+        </div>
+        <div className="washing__wrapper-block">
+          {hobs.map((hob, index) => (
+            <div key={index}>
+              Панель: {hob.hobModel}, Кол-во: {hob.hobQuantity}, Цена: {hob.hobPrice}, Стоимость: {hob.cost}
+            </div>
+          ))}
+        </div>
+        <button type="button" className="btn btn-danger wash__btn" onClick={addHob}>Добавить панель</button>
+
+        <div className="form-row washing">
+          <div className="form-group col-md-4">
+            <label>Вырезы</label>
+            <select 
+            className="form-control"
+            value={cutoutModel}
+            onChange={(e) => setCutoutModel(e.target.value)}
+            >
+            <option value="">Выберите</option>
+            <option>Накладная</option>
+            <option>В уровень</option>
+          </select>
+          </div>
+          <div className="form-group col-md-2">
+            <label>Кол-во</label>
+            <input 
+              type="number" 
+              className="form-control"
+              value={cutoutQuantity}
+              onChange={(e) => setCutoutQuantity(e.target.value)}
+            />
+          </div>
+          <div className="form-group col-md-2">
+            <label>Цена</label>
+            <input 
+              type="number" 
+              className="form-control result"
+              value={cutoutPrice}
+              onChange={(e) => setCutoutPrice(e.target.value)}
+            />
+          </div>
+        </div>
+        <div className="washing__wrapper-block">
+          {cutouts.map((cutout, index) => (
+            <div key={index}>
+              Вырез: {cutout.cutoutModel}, Кол-во: {cutout.cutoutQuantity}, Цена: {cutout.cutoutPrice}, Стоимость: {cutout.cost}
+            </div>
+          ))}
+        </div>
+        <button type="button" className="btn btn-danger wash__btn" onClick={addCutout}>Добавить вырез</button>
+
         <div className="form-row washing">
           <div className="form-group col-md-4">
             <label>Модель Мойки</label>

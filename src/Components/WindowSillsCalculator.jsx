@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 
-const BathroomCalculator = ({ updateTotalCost }) => {
+const WindowSillsCalculator = ({ updateTotalCost }) => {
     const [items, setItems] = useState([]);
-    const [sinksBath, setSinksBath] = useState([]);
+    const [borts, setBorts] = useState([]);
+    const [kromkas, setKromkas] = useState([]);
     const [additionalServices, setAdditionalServices] = useState([]);
   
     const [product, setProduct] = useState('');
@@ -15,10 +16,14 @@ const BathroomCalculator = ({ updateTotalCost }) => {
     const [materialQuantity, setMaterialQuantity] = useState('');
     const [unitPrice, setUnitPrice] = useState('');
   
-    const [sinkBathModel, setSinkBathModel] = useState('');
-    const [sinkBathQuantity, setSinkBathQuantity] = useState('');
-    const [sinkBathPrice, setSinkBathPrice] = useState('');
+    const [bortModel, setBortModel] = useState('');
+    const [bortQuantity, setBortQuantity] = useState('');
+    const [bortPrice, setBortPrice] = useState('');
   
+    const [kromkaModel, setKromkaModel] = useState('');
+    const [kromkaQuantity, setKromkaQuantity] = useState('');
+    const [kromkaPrice, setKromkaPrice] = useState('');
+
     const [serviceName, setServiceName] = useState('');
     const [serviceQuantity, setServiceQuantity] = useState('');
     const [servicePrice, setServicePrice] = useState('');
@@ -32,29 +37,39 @@ const BathroomCalculator = ({ updateTotalCost }) => {
   
     const addDimension = () => {
       if (length && width && materialQuantity && unitPrice) {
-      const area = parseFloat(length) * parseFloat(width);
-      const cost = parseFloat(materialQuantity) * parseFloat(unitPrice);
-      const newItem = { length, width, area, materialQuantity, unitPrice, cost };
-      setItems([...items, newItem]);
-      setTotalArea(totalArea + area);
-      setTotalCost(totalCost + cost);
-      setLength('');
-      setWidth('');
-      setMaterialQuantity('');
-      setUnitPrice('');
-
+        const area = totalArea;
+        const cost = parseFloat(materialQuantity) * parseFloat(unitPrice);
+        const newItem = { length, width, area, materialQuantity, unitPrice, cost };
+        setItems([...items, newItem]);
+        setTotalCost(totalCost + cost);
+        setLength('');
+        setWidth('');
+        setMaterialQuantity('');
+        setUnitPrice('');
       }
     };
   
-    const addSink = () => {
-      if (sinkBathModel && sinkBathQuantity && sinkBathPrice) {
-      const cost = parseFloat(sinkBathQuantity) * parseFloat(sinkBathPrice);
-      const newSinkBath = { sinkBathModel, sinkBathQuantity, sinkBathPrice, cost };
-      setSinksBath([...sinksBath, newSinkBath]);
+    const addBort = () => {
+      if (bortModel && bortQuantity && bortPrice) {
+      const cost = parseFloat(bortQuantity) * parseFloat(bortPrice);
+      const newBort = { bortModel, bortQuantity, bortPrice, cost };
+      setBorts([...borts, newBort]);
       setTotalCost(totalCost + cost);
-      setSinkBathModel('');
-      setSinkBathQuantity('');
-      setSinkBathPrice('');
+      setBortModel('');
+      setBortQuantity('');
+      setBortPrice('');
+      }
+    };
+
+    const addKromka = () => {
+      if (kromkaModel && kromkaQuantity && kromkaPrice) {
+        const cost = parseFloat(kromkaQuantity) * parseFloat(kromkaPrice);
+        const newKromka = { kromkaModel, kromkaQuantity, kromkaPrice, cost };
+        setKromka([...kromka, newKromka]);
+        setTotalCost(totalCost + cost);
+        setKromkaModel('');
+        setKromkaQuantity('');
+        setKromkaPrice('');
       }
     };
   
@@ -73,7 +88,7 @@ const BathroomCalculator = ({ updateTotalCost }) => {
     return (
       <div>
         <form className="form-table">
-        <h2>Столешница С/У</h2>
+        <h2>Подоконники</h2>
           <div className="form-row about">
             <div className="form-group col-md-3">
               <label>Изделие</label>
@@ -196,20 +211,18 @@ const BathroomCalculator = ({ updateTotalCost }) => {
           </div>
           <button type="button" className="btn btn-danger size-btn" onClick={addDimension}>Добавить размеры</button>
 
-          <div className="form-row washing">
+            <div className="form-row washing">
             <div className="form-group col-md-4">
-              <label>Модель Раковины</label>
+              <label>Бортик</label>
               <select 
               className="form-control"
-              value={sinkBathModel}
-              onChange={(e) => setSinkBathModel(e.target.value)}
+              value={bortModel}
+              onChange={(e) => setBortModel (e.target.value)}
               >
-              <option value="">Выберите раковину</option>
-              <option>Модель раковины 1</option>
-              <option>Модель раковины 2</option>
-              <option>Модель раковины 3</option>
-              <option>Модель раковины 4</option>
-              <option>Модель раковины 5</option>
+              <option value="">Выберите Бортик</option>
+              <option>Бортик 1</option>
+              <option>Бортик 2</option>
+              <option>Бортик 3</option>
             </select>
             </div>
             <div className="form-group col-md-2">
@@ -217,28 +230,70 @@ const BathroomCalculator = ({ updateTotalCost }) => {
               <input 
                 type="number" 
                 className="form-control"
-                value={sinkBathQuantity}
-                onChange={(e) => setSinkBathQuantity(e.target.value)}
+                value={bortQuantity}
+                onChange={(e) => setBortQuantity(e.target.value)}
               />
             </div>
             <div className="form-group col-md-2">
-              <label>Цена</label>
+              <label>Цена за 1</label>
               <input 
                 type="number" 
                 className="form-control result"
-                value={sinkBathPrice}
-                onChange={(e) => setSinkBathPrice(e.target.value)}
+                value={bortPrice}
+                onChange={(e) => setBortPrice(e.target.value)}
               />
             </div>
           </div>
           <div className="washing__wrapper-block">
-            {sinksBath.map((sink, index) => (
+            {borts.map((bort, index) => (
               <div key={index}>
-                Модель: {sink.sinkBathModel}, Кол-во: {sink.sinkBathQuantity}, Цена: {sink.sinkBathPrice}, Стоимость: {sink.cost}
+                Модель: {bort.bort}, Кол-во: {bort.bortQuantity}, Цена: {bort.bortPrice}, Стоимость: {bort.cost}
               </div>
             ))}
           </div>
-          <button type="button" className="btn btn-danger wash__btn" onClick={addSink}>Добавить мойку</button>
+          <button type="button" className="btn btn-danger wash__btn" onClick={addBort}>Добавить бортик</button>
+
+          <div className="form-row washing">
+            <div className="form-group col-md-4">
+              <label>Кромка</label>
+              <select 
+              className="form-control"
+              value={kromkaModel}
+              onChange={(e) => setKromkaModel (e.target.value)}
+              >
+              <option value="">Выберите кромку</option>
+              <option>Кромка 1</option>
+              <option>Кромка 2</option>
+              <option>Кромка 3</option>
+            </select>
+            </div>
+            <div className="form-group col-md-2">
+              <label>Кол-во</label>
+              <input 
+                type="number" 
+                className="form-control"
+                value={kromkaQuantity}
+                onChange={(e) => setKromkaQuantity(e.target.value)}
+              />
+            </div>
+            <div className="form-group col-md-2">
+              <label>Цена за 1</label>
+              <input 
+                type="number" 
+                className="form-control result"
+                value={kromkaPrice}
+                onChange={(e) => setKromkaPrice(e.target.value)}
+              />
+            </div>
+          </div>
+          <div className="washing__wrapper-block">
+            {kromkas.map((kromka, index) => (
+              <div key={index}>
+                Кромка: {kromka.kromka}, Кол-во: {kromka.kromkaQuantity}, Цена: {kromka.kromkaPrice}, Стоимость: {kromka.cost}
+              </div>
+            ))}
+          </div>
+          <button type="button" className="btn btn-danger wash__btn" onClick={addKromka}>Добавить кромку</button>
 
           <div className="form-row work">
             <div className="form-group col-md-4">
@@ -290,4 +345,4 @@ const BathroomCalculator = ({ updateTotalCost }) => {
   );
 };
 
-export default BathroomCalculator;
+export default WindowSillsCalculator;

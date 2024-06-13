@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 
-const BathroomCalculator = ({ updateTotalCost }) => {
+const WallPanelsCalculator = ({ updateTotalCost }) => {
     const [items, setItems] = useState([]);
-    const [sinksBath, setSinksBath] = useState([]);
+    const [sinks, setSinks] = useState([]);
     const [additionalServices, setAdditionalServices] = useState([]);
   
     const [product, setProduct] = useState('');
@@ -14,10 +14,7 @@ const BathroomCalculator = ({ updateTotalCost }) => {
     const [width, setWidth] = useState('');
     const [materialQuantity, setMaterialQuantity] = useState('');
     const [unitPrice, setUnitPrice] = useState('');
-  
-    const [sinkBathModel, setSinkBathModel] = useState('');
-    const [sinkBathQuantity, setSinkBathQuantity] = useState('');
-    const [sinkBathPrice, setSinkBathPrice] = useState('');
+
   
     const [serviceName, setServiceName] = useState('');
     const [serviceQuantity, setServiceQuantity] = useState('');
@@ -32,31 +29,18 @@ const BathroomCalculator = ({ updateTotalCost }) => {
   
     const addDimension = () => {
       if (length && width && materialQuantity && unitPrice) {
-      const area = parseFloat(length) * parseFloat(width);
-      const cost = parseFloat(materialQuantity) * parseFloat(unitPrice);
-      const newItem = { length, width, area, materialQuantity, unitPrice, cost };
-      setItems([...items, newItem]);
-      setTotalArea(totalArea + area);
-      setTotalCost(totalCost + cost);
-      setLength('');
-      setWidth('');
-      setMaterialQuantity('');
-      setUnitPrice('');
-
+        const area = totalArea;
+        const cost = parseFloat(materialQuantity) * parseFloat(unitPrice);
+        const newItem = { length, width, area, materialQuantity, unitPrice, cost };
+        setItems([...items, newItem]);
+        setTotalCost(totalCost + cost);
+        setLength('');
+        setWidth('');
+        setMaterialQuantity('');
+        setUnitPrice('');
       }
     };
   
-    const addSink = () => {
-      if (sinkBathModel && sinkBathQuantity && sinkBathPrice) {
-      const cost = parseFloat(sinkBathQuantity) * parseFloat(sinkBathPrice);
-      const newSinkBath = { sinkBathModel, sinkBathQuantity, sinkBathPrice, cost };
-      setSinksBath([...sinksBath, newSinkBath]);
-      setTotalCost(totalCost + cost);
-      setSinkBathModel('');
-      setSinkBathQuantity('');
-      setSinkBathPrice('');
-      }
-    };
   
     const addService = () => {
       if (serviceName && serviceQuantity && servicePrice) {
@@ -73,7 +57,7 @@ const BathroomCalculator = ({ updateTotalCost }) => {
     return (
       <div>
         <form className="form-table">
-        <h2>Столешница С/У</h2>
+            <h2>Cтен панели</h2>
           <div className="form-row about">
             <div className="form-group col-md-3">
               <label>Изделие</label>
@@ -164,7 +148,7 @@ const BathroomCalculator = ({ updateTotalCost }) => {
                 onClick={() => (length && width) ? setTotalArea(totalArea + parseFloat(length) * parseFloat(width)): setTotalArea(totalArea)}
                 >
                   Подсчитать
-                </button>
+                </button>                  
                     <button type='button' className="btn btn-danger size-btn" onClick={() => setTotalArea(0)}>Обнулить</button>
                 </div>
               <div className="form-group col-md-2">
@@ -195,50 +179,6 @@ const BathroomCalculator = ({ updateTotalCost }) => {
             </div>
           </div>
           <button type="button" className="btn btn-danger size-btn" onClick={addDimension}>Добавить размеры</button>
-
-          <div className="form-row washing">
-            <div className="form-group col-md-4">
-              <label>Модель Раковины</label>
-              <select 
-              className="form-control"
-              value={sinkBathModel}
-              onChange={(e) => setSinkBathModel(e.target.value)}
-              >
-              <option value="">Выберите раковину</option>
-              <option>Модель раковины 1</option>
-              <option>Модель раковины 2</option>
-              <option>Модель раковины 3</option>
-              <option>Модель раковины 4</option>
-              <option>Модель раковины 5</option>
-            </select>
-            </div>
-            <div className="form-group col-md-2">
-              <label>Кол-во</label>
-              <input 
-                type="number" 
-                className="form-control"
-                value={sinkBathQuantity}
-                onChange={(e) => setSinkBathQuantity(e.target.value)}
-              />
-            </div>
-            <div className="form-group col-md-2">
-              <label>Цена</label>
-              <input 
-                type="number" 
-                className="form-control result"
-                value={sinkBathPrice}
-                onChange={(e) => setSinkBathPrice(e.target.value)}
-              />
-            </div>
-          </div>
-          <div className="washing__wrapper-block">
-            {sinksBath.map((sink, index) => (
-              <div key={index}>
-                Модель: {sink.sinkBathModel}, Кол-во: {sink.sinkBathQuantity}, Цена: {sink.sinkBathPrice}, Стоимость: {sink.cost}
-              </div>
-            ))}
-          </div>
-          <button type="button" className="btn btn-danger wash__btn" onClick={addSink}>Добавить мойку</button>
 
           <div className="form-row work">
             <div className="form-group col-md-4">
@@ -290,4 +230,4 @@ const BathroomCalculator = ({ updateTotalCost }) => {
   );
 };
 
-export default BathroomCalculator;
+export default WallPanelsCalculator;
