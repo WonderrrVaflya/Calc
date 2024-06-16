@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, forwardRef, useImperativeHandle } from 'react';
 
-const KitchenCalculator = ({ updateTotalCost }) => {
+const KitchenCalculator = forwardRef(({ updateTotalCost }, ref) => {
   const [items, setItems] = useState([]);
   const [sinks, setSinks] = useState([]);
   const [hobs, setHobs] = useState([]);
@@ -49,6 +49,21 @@ const KitchenCalculator = ({ updateTotalCost }) => {
   useEffect(() => {
     updateTotalCost(totalCost);
   }, [totalCost]);
+
+  useImperativeHandle(ref, () => ({
+    getData() {
+      return {
+        items,
+        sinks,
+        hobs,
+        cutouts,
+        kromkas,
+        boards,
+        additionalServices,
+        totalCost,
+      };
+    },
+  }));
 
   const addDimension = () => {
     if (length && width && materialQuantity && unitPrice) {
@@ -672,6 +687,6 @@ const KitchenCalculator = ({ updateTotalCost }) => {
       </form>
     </div>
   );
-};
+});
 
 export default KitchenCalculator;

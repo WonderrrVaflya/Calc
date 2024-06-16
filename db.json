@@ -20,6 +20,154 @@
         "other": 0,
         "comments": 0
       }
+    },
+    {
+      "id": "88d9",
+      "name": "12",
+      "exchange": "123",
+      "date": "16.06.2024",
+      "totalFurnitureCost": 38499,
+      "designerBonus": "32",
+      "designerBonusSum": 0,
+      "userBonus": "2",
+      "userBonusSum": 0,
+      "finalTotalCost": 38499,
+      "kitchenData": {
+        "items": [
+          {
+            "length": "123",
+            "width": "23",
+            "area": 2829,
+            "materialQuantity": "313",
+            "unitPrice": "123",
+            "cost": 38499
+          }
+        ],
+        "sinks": [],
+        "hobs": [],
+        "cutouts": [],
+        "kromkas": [],
+        "boards": [],
+        "additionalServices": [],
+        "totalCost": 38499
+      },
+      "bathroomData": {},
+      "wallPanelsData": {},
+      "shelvesData": {},
+      "windowSillsData": {},
+      "otherData": {},
+      "commentsData": {}
+    },
+    {
+      "id": "d896",
+      "name": "123",
+      "exchange": "12",
+      "date": "16.06.2024",
+      "totalFurnitureCost": 123,
+      "designerBonus": "12",
+      "designerBonusSum": 14.76,
+      "userBonus": "11",
+      "userBonusSum": 13.53,
+      "finalTotalCost": 151.29,
+      "kitchenData": {
+        "items": [
+          {
+            "length": "123",
+            "width": "3",
+            "area": 369,
+            "materialQuantity": "1",
+            "unitPrice": "123",
+            "cost": 123
+          }
+        ],
+        "sinks": [],
+        "hobs": [],
+        "cutouts": [],
+        "kromkas": [],
+        "boards": [],
+        "additionalServices": [],
+        "totalCost": 123
+      },
+      "bathroomData": {},
+      "wallPanelsData": {},
+      "shelvesData": {},
+      "windowSillsData": {},
+      "otherData": {},
+      "commentsData": {}
+    },
+    {
+      "id": "6b2e",
+      "name": "13",
+      "exchange": "213",
+      "date": "16.06.2024",
+      "totalFurnitureCost": 6,
+      "designerBonus": "",
+      "designerBonusSum": 0,
+      "userBonus": "0",
+      "userBonusSum": 0,
+      "finalTotalCost": 6,
+      "kitchenData": {
+        "items": [
+          {
+            "length": "2323",
+            "width": "2",
+            "area": 4646,
+            "materialQuantity": "2",
+            "unitPrice": "3",
+            "cost": 6
+          }
+        ],
+        "sinks": [],
+        "hobs": [],
+        "cutouts": [],
+        "kromkas": [],
+        "boards": [],
+        "additionalServices": [],
+        "totalCost": 6
+      },
+      "bathroomData": {},
+      "wallPanelsData": {},
+      "shelvesData": {},
+      "windowSillsData": {},
+      "otherData": {},
+      "commentsData": {}
+    },
+    {
+      "id": "15d0",
+      "name": "13",
+      "exchange": "213",
+      "date": "17.06.2024",
+      "totalFurnitureCost": 6,
+      "designerBonus": "1",
+      "designerBonusSum": 0.06,
+      "userBonus": "0",
+      "userBonusSum": 0,
+      "finalTotalCost": 6.06,
+      "kitchenData": {
+        "items": [
+          {
+            "length": "2323",
+            "width": "2",
+            "area": 4646,
+            "materialQuantity": "2",
+            "unitPrice": "3",
+            "cost": 6
+          }
+        ],
+        "sinks": [],
+        "hobs": [],
+        "cutouts": [],
+        "kromkas": [],
+        "boards": [],
+        "additionalServices": [],
+        "totalCost": 6
+      },
+      "bathroomData": {},
+      "wallPanelsData": {},
+      "shelvesData": {},
+      "windowSillsData": {},
+      "otherData": {},
+      "commentsData": {}
     }
   ]
 }

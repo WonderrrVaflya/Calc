@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, forwardRef, useImperativeHandle } from 'react';
 
-const WindowSillsCalculator = ({ updateTotalCost }) => {
+const WindowSillsCalculator = forwardRef(({ updateTotalCost }, ref) => {
   const [items, setItems] = useState([]);
-  const [sinks, setSinks] = useState([]);
   const [kromkas, setKromkas] = useState([]);
   const [boards, setBoards] = useState([]);
   const [additionalServices, setAdditionalServices] = useState([]);
@@ -16,10 +15,6 @@ const WindowSillsCalculator = ({ updateTotalCost }) => {
   const [width, setWidth] = useState('');
   const [materialQuantity, setMaterialQuantity] = useState('');
   const [unitPrice, setUnitPrice] = useState('');
-
-  const [sinkModel, setSinkModel] = useState('');
-  const [sinkQuantity, setSinkQuantity] = useState('');
-  const [sinkPrice, setSinkPrice] = useState('');
 
   const [kromkaName, setKromkaName] = useState('');
   const [kromkaQuantity, setKromkaQuantity] = useState('');
@@ -39,6 +34,18 @@ const WindowSillsCalculator = ({ updateTotalCost }) => {
   useEffect(() => {
     updateTotalCost(totalCost);
   }, [totalCost]);
+
+  useImperativeHandle(ref, () => ({
+    getData() {
+      return {
+        items,
+        kromkas,
+        boards,
+        additionalServices,
+        totalCost,
+      };
+    },
+  }));
 
   const addDimension = () => {
     if (length && width && materialQuantity && unitPrice) {
@@ -446,6 +453,6 @@ const WindowSillsCalculator = ({ updateTotalCost }) => {
       </form>
     </div>
   );
-};
+});
 
 export default WindowSillsCalculator;

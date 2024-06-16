@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, forwardRef, useImperativeHandle } from 'react';
 
-const WallPanelsCalculator = ({ updateTotalCost }) => {
+const WallPanelsCalculator = forwardRef(({ updateTotalCost }, ref) => {
   const [items, setItems] = useState([]);
   const [additionalServices, setAdditionalServices] = useState([]);
 
@@ -24,6 +24,16 @@ const WallPanelsCalculator = ({ updateTotalCost }) => {
   useEffect(() => {
     updateTotalCost(totalCost);
   }, [totalCost]);
+
+  useImperativeHandle(ref, () => ({
+    getData() {
+      return {
+        items,
+        additionalServices,
+        totalCost,
+      };
+    },
+  }));
 
   const addDimension = () => {
     if (length && width && materialQuantity && unitPrice) {
@@ -285,6 +295,6 @@ const WallPanelsCalculator = ({ updateTotalCost }) => {
       </form>
     </div>
   );
-};
+});
 
 export default WallPanelsCalculator;

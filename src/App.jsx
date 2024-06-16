@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
+import axios from 'axios';
 import KitchenCalculator from './Components/KitchenCalculator';
 import BathroomCalculator from './Components/BathroomCalculator';
 import WallPanelsCalculator from './Components/WallPanelsCalculator';
@@ -11,14 +12,23 @@ import Comments from './Components/Comments';
 
 const App = () => {
   const [blocks, setBlocks] = useState([]);
-  const [calculatorCosts, setCalculatorCosts] = useState([]);
   const [name, setName] = useState('');
   const [exchange, setExchange] = useState('');
   const [designerBonus, setDesignerBonus] = useState('');
-  const [designerBonusSum, setDesignerBonusSum] = useState('');
+  const [designerBonusSum, setDesignerBonusSum] = useState(0); // Initialize to 0
   const [userBonus, setUserBonus] = useState('');
-  const [userBonusSum, setUserBonusSum] = useState('');
+  const [userBonusSum, setUserBonusSum] = useState(0); // Initialize to 0
   const [currentDate, setCurrentDate] = useState('');
+  const [totalFurnitureCost, setTotalFurnitureCost] = useState(0); // Initialize to 0
+  const [finalTotalCost, setFinalTotalCost] = useState(0); // Initialize to 0
+  
+  const kitchenCalculatorRef = useRef();
+  const bathroomCalculatorRef = useRef();
+  const wallPanelsCalculatorRef = useRef();
+  const shelvesCalculatorRef = useRef();
+  const windowSillsCalculatorRef = useRef();
+  const otherCalculatorRef = useRef();
+  const commentsCalculatorRef = useRef();
 
   useEffect(() => {
     const updateDate = () => {
@@ -38,19 +48,11 @@ const App = () => {
 
   const addBlock = (type) => {
     setBlocks([...blocks, { type, id: Date.now() }]);
-    setCalculatorCosts([...calculatorCosts, { id: Date.now(), cost: 0 }]);
   };
 
   const removeBlock = (id) => {
     setBlocks(blocks.filter(block => block.id !== id));
-    setCalculatorCosts(calculatorCosts.filter(cost => cost.id !== id));
   };
-
-  const updateTotalCost = (cost, id) => {
-    setCalculatorCosts((prevCosts) => prevCosts.map(c => c.id === id ? { ...c, cost } : c));
-  };
-
-  const totalFurnitureCost = calculatorCosts.reduce((sum, item) => sum + item.cost, 0);
 
   const handleDesignerBonusChange = (e) => {
     const value = e.target.value;
@@ -74,10 +76,88 @@ const App = () => {
     }
   };
 
-  const finalTotalCost = totalFurnitureCost + designerBonusSum + userBonusSum;
+  const calculateTotalFurnitureCost = () => {
+    let totalCost = 0;
+
+    if (kitchenCalculatorRef.current) {
+      const kitchenData = kitchenCalculatorRef.current.getData();
+      totalCost += kitchenData.totalCost || 0;
+    }
+
+    if (bathroomCalculatorRef.current) {
+      const bathroomData = bathroomCalculatorRef.current.getData();
+      totalCost += bathroomData.totalCost || 0;
+    }
+
+    if (wallPanelsCalculatorRef.current) {
+      const wallPanelsData = wallPanelsCalculatorRef.current.getData();
+      totalCost += wallPanelsData.totalCost || 0;
+    }
+
+    if (shelvesCalculatorRef.current) {
+      const shelvesData = shelvesCalculatorRef.current.getData();
+      totalCost += shelvesData.totalCost || 0;
+    }
+
+    if (windowSillsCalculatorRef.current) {
+      const windowSillsData = windowSillsCalculatorRef.current.getData();
+      totalCost += windowSillsData.totalCost || 0;
+    }
+
+    if (otherCalculatorRef.current) {
+      const otherData = otherCalculatorRef.current.getData();
+      totalCost += otherData.totalCost || 0;
+    }
+
+    if (commentsCalculatorRef.current) {
+      const commentsData = commentsCalculatorRef.current.getData();
+      totalCost += commentsData.totalCost || 0;
+    }
+
+    return totalCost;
+  };
+
+  useEffect(() => {
+    const newTotalFurnitureCost = calculateTotalFurnitureCost();
+    setTotalFurnitureCost(newTotalFurnitureCost);
+    const newFinalTotalCost = newTotalFurnitureCost + designerBonusSum + userBonusSum;
+    setFinalTotalCost(newFinalTotalCost);
+  }, [
+    kitchenCalculatorRef,
+    bathroomCalculatorRef,
+    wallPanelsCalculatorRef,
+    shelvesCalculatorRef,
+    windowSillsCalculatorRef,
+    otherCalculatorRef,
+    commentsCalculatorRef,
+    designerBonusSum,
+    userBonusSum
+  ]);
 
   const handleSave = async () => {
-    const data = {
+    const kitchenData = kitchenCalculatorRef.current ? kitchenCalculatorRef.current.getData() : {};
+    const bathroomData = bathroomCalculatorRef.current ? bathroomCalculatorRef.current.getData() : {};
+    const wallPanelsData = wallPanelsCalculatorRef.current ? wallPanelsCalculatorRef.current.getData() : {};
+    const shelvesData = shelvesCalculatorRef.current ? shelvesCalculatorRef.current.getData() : {};
+    const windowSillsData = windowSillsCalculatorRef.current ? windowSillsCalculatorRef.current.getData() : {};
+    const otherData = otherCalculatorRef.current ? otherCalculatorRef.current.getData() : {};
+    const commentsData = commentsCalculatorRef.current ? commentsCalculatorRef.current.getData() : {};
+
+    const totalFurnitureCost = [
+      kitchenData.totalCost || 0,
+      bathroomData.totalCost || 0,
+      wallPanelsData.totalCost || 0,
+      shelvesData.totalCost || 0,
+      windowSillsData.totalCost || 0,
+      otherData.totalCost || 0,
+      commentsData.totalCost || 0,
+    ].reduce((sum, cost) => sum + cost, 0);
+  
+    const designerBonusSum = parseFloat(designerBonus) / 100 * totalFurnitureCost || 0;
+    const userBonusSum = parseFloat(userBonus) / 100 * totalFurnitureCost || 0;
+    const finalTotalCost = totalFurnitureCost + designerBonusSum + userBonusSum;
+  
+    const dataToSend = {
       name,
       exchange,
       date: currentDate,
@@ -87,23 +167,23 @@ const App = () => {
       userBonus,
       userBonusSum,
       finalTotalCost,
-      calculatorCosts
+      kitchenData,
+      bathroomData,
+      wallPanelsData,
+      shelvesData,
+      windowSillsData,
+      otherData,
+      commentsData,
     };
-
+  
     try {
-      const response = await fetch('http://localhost:5000/entries', {
-        method: 'POST',
+      const response = await axios.post('http://localhost:5000/entries', dataToSend, {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(data),
       });
-
-      if (response.ok) {
         alert('Данные успешно сохранены!');
-      } else {
-        alert('Ошибка при сохранении данных');
-      }
+      console.log(response)
     } catch (error) {
       console.error('Ошибка при сохранении данных:', error);
       alert('Ошибка при сохранении данных');
@@ -148,50 +228,47 @@ const App = () => {
 
       {blocks.map(block => (
         <div key={block.id} className="block-container">
-          {block.type === 'kitchen' && <KitchenCalculator updateTotalCost={(cost) => updateTotalCost(cost, block.id)} />}
-          {block.type === 'bathroom' && <BathroomCalculator updateTotalCost={(cost) => updateTotalCost(cost, block.id)} />}
-          {block.type === 'wallPanels' && <WallPanelsCalculator updateTotalCost={(cost) => updateTotalCost(cost, block.id)} />}
-          {block.type === 'windowSills' && <WindowSillsCalculator updateTotalCost={(cost) => updateTotalCost(cost, block.id)} />}
-          {block.type === 'shelves' && <ShelvesCalculator updateTotalCost={(cost) => updateTotalCost(cost, block.id)} />}
-          {block.type === 'other' && <Other updateTotalCost={(cost) => updateTotalCost(cost, block.id)} />}
-          {block.type === 'comments' && <Comments updateTotalCost={(cost) => updateTotalCost(cost, block.id)} />}
-          <button className="btn btn-danger btn-remove" onClick={() => removeBlock(block.id)}>Удалить</button>
+          {block.type === 'kitchen' && <KitchenCalculator ref={kitchenCalculatorRef} updateTotalCost={(cost) => setTotalFurnitureCost(prev => prev + cost)} />}
+          {block.type === 'bathroom' && <BathroomCalculator ref={bathroomCalculatorRef} updateTotalCost={(cost) => setTotalFurnitureCost(prev => prev + cost)} />}
+          {block.type === 'wallPanels' && <WallPanelsCalculator ref={wallPanelsCalculatorRef} updateTotalCost={(cost) => setTotalFurnitureCost(prev => prev + cost)} />}
+          {block.type === 'windowSills' && <WindowSillsCalculator ref={windowSillsCalculatorRef} updateTotalCost={(cost) => setTotalFurnitureCost(prev => prev + cost)} />}
+          {block.type === 'shelves' && <ShelvesCalculator ref={shelvesCalculatorRef} updateTotalCost={(cost) => setTotalFurnitureCost(prev => prev + cost)} />}
+          {block.type === 'other' && <Other ref={otherCalculatorRef} updateTotalCost={(cost) => setTotalFurnitureCost(prev => prev + cost)} />}
+          {block.type === 'comments' && <Comments ref={commentsCalculatorRef} updateTotalCost={(cost) => setTotalFurnitureCost(prev => prev + cost)} />}
+          <button className="btn btn-danger btn-sm" onClick={() => removeBlock(block.id)}>Удалить блок</button>
         </div>
       ))}
 
-      <div className="finish">
-        <p className="summ">Общая стоимость: {totalFurnitureCost}</p>
-        <div className="form-group finish__percent">
-          <p>Бонус Дизайнера</p>
-          <input
-            type="number"
-            className="form-control finish__design--percent"
-            value={designerBonus}
-            onChange={handleDesignerBonusChange}
-          />
-        </div>
-        <div className="form-group finish__percent">
-          <p className="summ">Процент</p>
-          <input
-            type="number"
-            className="form-control finish__design--percent"
-            value={userBonus}
-            onChange={handleUserBonusChange}
-          />
-        </div>
-
-        <p className="summ">Итого: {finalTotalCost}</p>
+      <div className="form-group">
+        <label htmlFor="designerBonus">Бонус дизайнера, %:</label>
+        <input
+          type="number"
+          className="form-control"
+          id="designerBonus"
+          value={designerBonus}
+          onChange={handleDesignerBonusChange}
+        />
       </div>
-      <button
-        type="button"
-        className="btn btn-primary btn-lg btn-block"
-        onClick={handleSave}>
-        Сохранить
-      </button>
+
+      <div className="form-group">
+        <label htmlFor="userBonus">Бонус клиента, %:</label>
+        <input
+          type="number"
+          className="form-control"
+          id="userBonus"
+          value={userBonus}
+          onChange={handleUserBonusChange}
+        />
+      </div>
+
+      <div className="total-cost">
+        <h3>Общая стоимость мебели: {totalFurnitureCost}</h3>
+        <h3>Итоговая стоимость с учетом бонусов: {finalTotalCost}</h3>
+      </div>
+
+      <button className="btn btn-primary" onClick={handleSave}>Сохранить</button>
     </div>
   );
 };
 
 export default App;
-
-

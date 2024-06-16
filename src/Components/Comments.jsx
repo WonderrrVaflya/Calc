@@ -1,11 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, forwardRef, useImperativeHandle } from 'react';
 
-const Comments = () => {
+const Comments = forwardRef(( ref) => {
   const [comment, setComment] = useState('');
 
-  const handleCommentSave = () => {
-    setComment('')
-  };
+  useImperativeHandle(ref, () => ({
+    getData() {
+      return {
+        comment
+      };
+    },
+  }));
 
   return (
     <form className="form-table">
@@ -21,12 +25,12 @@ const Comments = () => {
         onChange={(e) => setComment(e.target.value)}
       />
     </div>
-      <button type="button" className="btn btn-danger wash__btn" onClick={handleCommentSave}>
+      <button type="button" className="btn btn-danger wash__btn">
         Сохранить комментарий
       </button>
       <p>{comment}</p>
     </form>
   );
-};
+});
 
 export default Comments;

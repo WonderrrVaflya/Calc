@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, forwardRef, useImperativeHandle } from "react";
 
-const BathroomCalculator = ({ updateTotalCost }) => {
+const BathroomCalculator = forwardRef(({ updateTotalCost }, ref) => {
   const [items, setItems] = useState([]);
   const [sinks, setSinks] = useState([]);
   const [kromkas, setKromkas] = useState([]);
@@ -39,6 +39,19 @@ const BathroomCalculator = ({ updateTotalCost }) => {
   useEffect(() => {
     updateTotalCost(totalCost);
   }, [totalCost]);
+
+  useImperativeHandle(ref, () => ({
+    getData() {
+      return {
+        items,
+        sinks,
+        kromkas,
+        boards,
+        additionalServices,
+        totalCost,
+      };
+    },
+  }));
 
   const addDimension = () => {
     if (length && width && materialQuantity && unitPrice) {
@@ -520,7 +533,7 @@ const BathroomCalculator = ({ updateTotalCost }) => {
       </form>
     </div>
   );
-  };
+  });
   
   export default BathroomCalculator;
 

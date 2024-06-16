@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, forwardRef, useImperativeHandle } from 'react';
 
-const Other = ({ updateTotalCost }) => {
+const Other = forwardRef(({ updateTotalCost }, ref) => {
   const [measures, setMeasures] = useState([]);
   const [deliverys, setDeliverys] = useState([]);
   const [installations, setInstallations] = useState([]);
@@ -17,6 +17,17 @@ const Other = ({ updateTotalCost }) => {
   useEffect(() => {
     updateTotalCost(totalCost);
   }, [totalCost]);
+
+  useImperativeHandle(ref, () => ({
+    getData() {
+      return {
+        measures,
+        deliverys,
+        installations,
+        totalCost,
+      };
+    },
+  }));
 
   const addMeasure = () => {
     if (measureQuantity && measurePrice) {
@@ -204,6 +215,6 @@ const Other = ({ updateTotalCost }) => {
       </div>
     </form>
   );
-};
+});
 
 export default Other;
