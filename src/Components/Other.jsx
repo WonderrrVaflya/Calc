@@ -20,36 +20,62 @@ const Other = ({ updateTotalCost }) => {
 
   const addMeasure = () => {
     if (measureQuantity && measurePrice) {
-    const cost = parseFloat(measureQuantity) * parseFloat(measurePrice);
-    const newMeasure = { measureQuantity, measurePrice, cost };
-    setMeasures([...measures, newMeasure ]);
-    setTotalCost(totalCost + cost);
-    setMeasureQuantity('');
-    setMeasurePrice('');
+      const cost = parseFloat(measureQuantity) * parseFloat(measurePrice);
+      const newMeasure = { measureQuantity, measurePrice, cost };
+      setMeasures([...measures, newMeasure]);
+      setTotalCost(totalCost + cost);
+      setMeasureQuantity('');
+      setMeasurePrice('');
     }
   }
 
   const addDelivery = () => {
     if (deliveryQuantity && deliveryPrice) {
-    const cost = parseFloat(deliveryQuantity) * parseFloat(deliveryPrice);
-    const newDelivery = { deliveryQuantity, deliveryPrice, cost };
-    setDeliverys([...deliverys, newDelivery ]);
-    setTotalCost(totalCost + cost);
-    setDeliveryQuantity('');
-    setDeliveryPrice('');
+      const cost = parseFloat(deliveryQuantity) * parseFloat(deliveryPrice);
+      const newDelivery = { deliveryQuantity, deliveryPrice, cost };
+      setDeliverys([...deliverys, newDelivery]);
+      setTotalCost(totalCost + cost);
+      setDeliveryQuantity('');
+      setDeliveryPrice('');
     }
   }
 
   const addInstallation = () => {
     if (installationPrice && installationQuantity) {
-    const cost = parseFloat(installationQuantity) * parseFloat(installationPrice);
-    const newInstallation = { installationQuantity, installationPrice, cost };
-    setInstallations([...installations, newInstallation ]);
-    setTotalCost(totalCost + cost);
-    setInstallationQuantity('');
-    setInstallationPrice('');
+      const cost = parseFloat(installationQuantity) * parseFloat(installationPrice);
+      const newInstallation = { installationQuantity, installationPrice, cost };
+      setInstallations([...installations, newInstallation]);
+      setTotalCost(totalCost + cost);
+      setInstallationQuantity('');
+      setInstallationPrice('');
     }
   }
+
+  const deleteItem = (index, type) => {
+    let updatedItems;
+    let costToDeduct;
+    switch (type) {
+      case 'measure':
+        costToDeduct = measures[index].cost;
+        updatedItems = measures.filter((_, i) => i !== index);
+        setMeasures(updatedItems);
+        setTotalCost(totalCost - costToDeduct)
+        break;
+      case 'delivery':
+        costToDeduct = deliverys[index].cost;
+        updatedItems = deliverys.filter((_, i) => i !== index);
+        setDeliverys(updatedItems);
+        setTotalCost(totalCost - costToDeduct)
+        break;  
+      case 'installation':
+        costToDeduct = installations[index].cost;
+        updatedItems = installations.filter((_, i) => i !== index);
+        setInstallations(updatedItems);
+        setTotalCost(totalCost - costToDeduct)
+        break;  
+      default:
+        return;
+    }}
 
   return (
     <form className="form-table">
@@ -78,15 +104,22 @@ const Other = ({ updateTotalCost }) => {
             onChange={(e) => setMeasurePrice(parseFloat(e.target.value))}
           />
         </div>
-        <button type="button" className="btn btn-danger wash__btn" onClick={addMeasure}>Добавить замер</button>
+        <button type="button" className="btn btn-danger other__btn" onClick={addMeasure}>Добавить замер</button>
       </div>
       <div className="washing__wrapper-block">
-            {measures.map((measure, index) => (
-              <div key={index}>
-                Кол-во: {measure.measureQuantity}, Цена: {measure.measurePrice}, Стоимость: {measure.cost}
-              </div>
-            ))}
-        </div>
+        {measures.map((measure, index) => (
+          <div key={index} className="size__wrapper-block">
+            <p>Кол-во: {measure.measureQuantity}, Цена: {measure.measurePrice}, Стоимость: {measure.cost}</p>
+            <button
+                type="button"
+                className="btn btn-danger"
+                onClick={() => deleteItem(index, 'measure')}
+              >
+                &times;
+              </button>
+          </div>
+        ))}
+      </div>
 
       <div className="form-row">
         <div className="form-group col-md-2 froze">
@@ -112,14 +145,21 @@ const Other = ({ updateTotalCost }) => {
             onChange={(e) => setDeliveryPrice(parseFloat(e.target.value))}
           />
         </div>
-      <button type="button" className="btn btn-danger wash__btn" onClick={addDelivery}>Добавить доставку</button>
+        <button type="button" className="btn btn-danger other__btn" onClick={addDelivery}>Добавить доставку</button>
       </div>
       <div className="washing__wrapper-block">
-            {deliverys.map((delivery, index) => (
-              <div key={index}>
-                Кол-во: {delivery.deliveryQuantity}, Цена: {delivery.deliveryPrice}, Стоимость: {delivery.cost}
-              </div>
-            ))}
+        {deliverys.map((delivery, index) => (
+          <div key={index} className="size__wrapper-block">
+          <p>Кол-во: {delivery.deliveryQuantity}, Цена: {delivery.deliveryPrice}, Стоимость: {delivery.cost}</p>
+          <button
+              type="button"
+              className="btn btn-danger"
+              onClick={() => deleteItem(index, 'delivery')}
+            >
+              &times;
+            </button>
+        </div>
+        ))}
       </div>
 
       <div className="form-row">
@@ -146,14 +186,21 @@ const Other = ({ updateTotalCost }) => {
             onChange={(e) => setInstallationPrice(parseFloat(e.target.value))}
           />
         </div>
-      <button type="button" className="btn btn-danger wash__btn" onClick={addInstallation}>Добавить установку</button>
+        <button type="button" className="btn btn-danger other__btn" onClick={addInstallation}>Добавить установку</button>
       </div>
       <div className="washing__wrapper-block">
-            {installations.map((installation, index) => (
-              <div key={index}>
-                Кол-во: {installation.installationQuantity}, Цена: {installation.installationPrice}, Стоимость: {installation.cost}
-              </div>
-            ))}
+        {installations.map((installation, index) => (
+          <div key={index} className="size__wrapper-block">
+          <p>Кол-во: {installation.installationQuantity}, Цена: {installation.installationPrice}, Стоимость: {installation.cost}</p>
+          <button
+              type="button"
+              className="btn btn-danger"
+              onClick={() => deleteItem(index, 'installation')}
+            >
+              &times;
+            </button>
+        </div>
+        ))}
       </div>
     </form>
   );
