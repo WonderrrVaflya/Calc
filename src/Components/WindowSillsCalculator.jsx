@@ -1,6 +1,6 @@
 import React, { useState, useEffect, forwardRef, useImperativeHandle } from 'react';
 
-const WindowSillsCalculator = forwardRef(({ updateTotalCost }, ref) => {
+const WindowSillsCalculator = forwardRef(({ onUpdateTotalCost }, ref) => {
   const [items, setItems] = useState([]);
   const [kromkas, setKromkas] = useState([]);
   const [boards, setBoards] = useState([]);
@@ -30,10 +30,6 @@ const WindowSillsCalculator = forwardRef(({ updateTotalCost }, ref) => {
 
   const [totalArea, setTotalArea] = useState(0);
   const [totalCost, setTotalCost] = useState(0);
-
-  useEffect(() => {
-    updateTotalCost(totalCost);
-  }, [totalCost]);
 
   useImperativeHandle(ref, () => ({
     getData() {
@@ -125,6 +121,7 @@ const WindowSillsCalculator = forwardRef(({ updateTotalCost }, ref) => {
     };
 
     setTotalCost(calculateTotalCost());
+    onUpdateTotalCost()
   }, [items, additionalServices, kromkas, boards]);
   
    const deleteItem = (index, type) => {

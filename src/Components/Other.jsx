@@ -1,6 +1,6 @@
 import React, { useState, useEffect, forwardRef, useImperativeHandle } from 'react';
 
-const Other = forwardRef(({ updateTotalCost }, ref) => {
+const Other = forwardRef(({ onUpdateTotalCost }, ref) => {
   const [measures, setMeasures] = useState([]);
   const [deliverys, setDeliverys] = useState([]);
   const [installations, setInstallations] = useState([]);
@@ -13,10 +13,6 @@ const Other = forwardRef(({ updateTotalCost }, ref) => {
   const [installationPrice, setInstallationPrice] = useState('');
 
   const [totalCost, setTotalCost] = useState(0);
-
-  useEffect(() => {
-    updateTotalCost(totalCost);
-  }, [totalCost]);
 
   useImperativeHandle(ref, () => ({
     getData() {
@@ -61,6 +57,25 @@ const Other = forwardRef(({ updateTotalCost }, ref) => {
       setInstallationPrice('');
     }
   }
+
+  useEffect(() => {
+    const calculateTotalCost = () => {
+      let total = 0;
+      measures.forEach(el => {
+        total += parseFloat(el.cost);
+      });
+      deliverys.forEach(service => {
+        total += parseFloat(service.cost);
+      });
+      installations.forEach(service => {
+        total += parseFloat(service.cost);
+      });
+      return total;
+    };
+
+    setTotalCost(calculateTotalCost());
+    onUpdateTotalCost();
+  }, [ measures, deliverys, installations ]);
 
   const deleteItem = (index, type) => {
     let updatedItems;

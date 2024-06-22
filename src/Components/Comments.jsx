@@ -1,6 +1,6 @@
 import React, { useState, forwardRef, useImperativeHandle } from 'react';
 
-const Comments = forwardRef(( ref) => {
+const Comments = forwardRef((_,ref) => {
   const [comment, setComment] = useState('');
 
   useImperativeHandle(ref, () => ({

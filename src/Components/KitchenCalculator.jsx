@@ -1,6 +1,6 @@
 import React, { useState, useEffect, forwardRef, useImperativeHandle } from 'react';
 
-const KitchenCalculator = forwardRef(({ updateTotalCost }, ref) => {
+const KitchenCalculator = forwardRef(({ onUpdateTotalCost }, ref) => {
   const [items, setItems] = useState([]);
   const [sinks, setSinks] = useState([]);
   const [hobs, setHobs] = useState([]);
@@ -46,10 +46,6 @@ const KitchenCalculator = forwardRef(({ updateTotalCost }, ref) => {
   const [totalArea, setTotalArea] = useState(0);
   const [totalCost, setTotalCost] = useState(0);
 
-  useEffect(() => {
-    updateTotalCost(totalCost);
-  }, [totalCost]);
-
   useImperativeHandle(ref, () => ({
     getData() {
       return {
@@ -78,7 +74,7 @@ const KitchenCalculator = forwardRef(({ updateTotalCost }, ref) => {
       setLength('');
       setWidth('');
       setMaterialQuantity('');
-      setUnitPrice('');
+      setUnitPrice('')
     }
   };
 
@@ -160,38 +156,25 @@ const KitchenCalculator = forwardRef(({ updateTotalCost }, ref) => {
       await addKromka();
       await addBoard();
       await addService();
+      await onUpdateTotalCost();
   };
   
   useEffect(() => {
     const calculateTotalCost = () => {
       let total = 0;
-      items.forEach(item => {
-        total += parseFloat(item.cost);
-      });
-      sinks.forEach(sink => {
-        total += parseFloat(sink.cost);
-      });
-      hobs.forEach(hob => {
-        total += parseFloat(hob.cost);
-      });
-      cutouts.forEach(cutout => {
-        total += parseFloat(cutout.cost);
-      });
-      additionalServices.forEach(service => {
-        total += parseFloat(service.cost);
-      });
-      kromkas.forEach(kromka => {
-        total += parseFloat(kromka.cost);
-      });
-      boards.forEach(board => {
-        total += parseFloat(board.cost);
-      });
+      total += items.reduce((acc, item) => acc + parseFloat(item.cost), 0);
+      total += sinks.reduce((acc, sink) => acc + parseFloat(sink.cost), 0);
+      total += hobs.reduce((acc, hob) => acc + parseFloat(hob.cost), 0);
+      total += cutouts.reduce((acc, cutout) => acc + parseFloat(cutout.cost), 0);
+      total += additionalServices.reduce((acc, service) => acc + parseFloat(service.cost), 0);
+      total += kromkas.reduce((acc, kromka) => acc + parseFloat(kromka.cost), 0);
+      total += boards.reduce((acc, board) => acc + parseFloat(board.cost), 0);
       return total;
     };
-
     setTotalCost(calculateTotalCost());
+    onUpdateTotalCost();
   }, [items, sinks, hobs, cutouts, additionalServices, kromkas, boards]);
-
+  
    const deleteItem = (index, type) => {
     let updatedItems;
     let costToDeduct;

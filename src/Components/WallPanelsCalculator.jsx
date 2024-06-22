@@ -1,6 +1,6 @@
 import React, { useState, useEffect, forwardRef, useImperativeHandle } from 'react';
 
-const WallPanelsCalculator = forwardRef(({ updateTotalCost }, ref) => {
+const WallPanelsCalculator = forwardRef(({ onUpdateTotalCost }, ref) => {
   const [items, setItems] = useState([]);
   const [additionalServices, setAdditionalServices] = useState([]);
 
@@ -20,10 +20,6 @@ const WallPanelsCalculator = forwardRef(({ updateTotalCost }, ref) => {
 
   const [totalArea, setTotalArea] = useState(0);
   const [totalCost, setTotalCost] = useState(0);
-
-  useEffect(() => {
-    updateTotalCost(totalCost);
-  }, [totalCost]);
 
   useImperativeHandle(ref, () => ({
     getData() {
@@ -78,6 +74,7 @@ const WallPanelsCalculator = forwardRef(({ updateTotalCost }, ref) => {
     };
 
     setTotalCost(calculateTotalCost());
+    onUpdateTotalCost();
   }, [ additionalServices ]);
   
    const deleteItem = (index, type) => {

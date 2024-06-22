@@ -28,6 +28,12 @@ form {
   gap: 20px;
 }
 
+.final-input {
+  display: inline;
+  width: 100px;
+  margin-left: 10px;
+}
+
 .form-row {
   display: flex;
   gap: 3px;

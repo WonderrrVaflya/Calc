@@ -1,6 +1,6 @@
 import { useState, useEffect, forwardRef, useImperativeHandle } from "react";
 
-const BathroomCalculator = forwardRef(({ updateTotalCost }, ref) => {
+const BathroomCalculator = forwardRef(({ onUpdateTotalCost }, ref) => {
   const [items, setItems] = useState([]);
   const [sinks, setSinks] = useState([]);
   const [kromkas, setKromkas] = useState([]);
@@ -35,10 +35,6 @@ const BathroomCalculator = forwardRef(({ updateTotalCost }, ref) => {
 
   const [totalArea, setTotalArea] = useState(0);
   const [totalCost, setTotalCost] = useState(0);
-
-  useEffect(() => {
-    updateTotalCost(totalCost);
-  }, [totalCost]);
 
   useImperativeHandle(ref, () => ({
     getData() {
@@ -146,6 +142,7 @@ const BathroomCalculator = forwardRef(({ updateTotalCost }, ref) => {
     };
 
     setTotalCost(calculateTotalCost());
+    onUpdateTotalCost();
   }, [items, sinks, additionalServices, kromkas, boards]);
   
    const deleteItem = (index, type) => {
